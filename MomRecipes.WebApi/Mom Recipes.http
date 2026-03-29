@@ -1,0 +1,6 @@
+@Mom_Recipes_HostAddress = http://localhost:5115
+
+GET {{Mom_Recipes_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
