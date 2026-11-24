@@ -4,7 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Mom_Recipes</RootNamespace>
     <UserSecretsId>b382af91-50ac-464a-b98a-5ddb7dc5193e</UserSecretsId>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
   </PropertyGroup>
@@ -12,6 +11,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MomRecipes.Application\MomRecipes.Application.csproj" />
+    <ProjectReference Include="..\MomRecipes.Infrastructure\MomRecipes.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

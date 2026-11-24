@@ -1,6 +1,27 @@
-@Mom_Recipes_HostAddress = http://localhost:5115
+@HostAddress = http://localhost:5115
 
-GET {{Mom_Recipes_HostAddress}}/weatherforecast/
+GET {{HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+POST {{HostAddress}}/api/recipes
+Content-Type: application/json
+
+{
+  "title": "Tomato Salad",
+  "servings": 2,
+  "ingredients": [
+    { "name": "Tomato", "quantity": 2 },
+    { "name": "Salt" }
+  ],
+  "steps": [
+    "Slice the tomatoes.",
+    "Season to taste."
+  ]
+}
+
+###
+
+GET {{HostAddress}}/api/recipes
+Accept: application/json

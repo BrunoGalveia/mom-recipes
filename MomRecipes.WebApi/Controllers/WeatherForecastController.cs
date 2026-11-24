@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Mom_Recipes.Controllers
+namespace MomRecipes.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

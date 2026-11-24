@@ -14,19 +14,22 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Mom Recipes/Mom Recipes.csproj", "Mom Recipes/"]
-RUN dotnet restore "./Mom Recipes/Mom Recipes.csproj"
+COPY ["MomRecipes.Domain/MomRecipes.Domain.csproj", "MomRecipes.Domain/"]
+COPY ["MomRecipes.Application/MomRecipes.Application.csproj", "MomRecipes.Application/"]
+COPY ["MomRecipes.Infrastructure/MomRecipes.Infrastructure.csproj", "MomRecipes.Infrastructure/"]
+COPY ["MomRecipes.WebApi/MomRecipes.WebApi.csproj", "MomRecipes.WebApi/"]
+RUN dotnet restore "MomRecipes.WebApi/MomRecipes.WebApi.csproj"
 COPY . .
-WORKDIR "/src/Mom Recipes"
-RUN dotnet build "./Mom Recipes.csproj" -c %BUILD_CONFIGURATION% -o /app/build
+WORKDIR "/src/MomRecipes.WebApi"
+RUN dotnet build "MomRecipes.WebApi.csproj" -c %BUILD_CONFIGURATION% -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Mom Recipes.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "MomRecipes.WebApi.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Mom Recipes.dll"]
+ENTRYPOINT ["dotnet", "MomRecipes.WebApi.dll"]

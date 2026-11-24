@@ -1,8 +1,13 @@
+using MomRecipes.Application.Recipes;
+using MomRecipes.Infrastructure.Recipes;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<RecipeService>();
+builder.Services.AddSingleton<IRecipeRepository, InMemoryRecipeRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

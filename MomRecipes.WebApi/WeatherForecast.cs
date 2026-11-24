@@ -1,4 +1,4 @@
-namespace Mom_Recipes
+namespace MomRecipes.WebApi
 {
     public class WeatherForecast
     {
