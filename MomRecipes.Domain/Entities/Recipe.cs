@@ -51,6 +51,50 @@ public sealed class Recipe
     public IReadOnlyList<RecipeStep> Steps { get; }
     public IReadOnlyList<RecipeTag> RecipeTags { get; }
 
+    public void ReplaceContents(Recipe replacement)
+    {
+        ArgumentNullException.ThrowIfNull(replacement);
+        if (ReferenceEquals(this, replacement))
+        {
+            return;
+        }
+
+        Title = replacement.Title;
+        Description = replacement.Description;
+        ImageUrl = replacement.ImageUrl;
+        Servings = replacement.Servings;
+        TotalTimeInMinutes = replacement.TotalTimeInMinutes;
+
+        _ingredients.Clear();
+        foreach (var ingredient in replacement.Ingredients)
+        {
+            AddIngredient(ingredient.Ingredient, ingredient.Quantity, ingredient.Unit, ingredient.Notes);
+        }
+
+        // Reuse existing rows by position so the unique index stays valid throughout an edit.
+        var stepsByPosition = _steps.ToDictionary(step => step.Position);
+        _steps.RemoveAll(step => step.Position > replacement.Steps.Count);
+        foreach (var step in replacement.Steps)
+        {
+            if (stepsByPosition.TryGetValue(step.Position, out var existing))
+            {
+                existing.UpdateInstruction(step.Instruction);
+            }
+            else
+            {
+                _steps.Add(new RecipeStep(this, step.Position, step.Instruction));
+            }
+        }
+        _steps.Sort((first, second) => first.Position.CompareTo(second.Position));
+
+        var retainedTagIds = replacement.RecipeTags.Select(link => link.TagId).Where(id => id != 0).ToHashSet();
+        _recipeTags.RemoveAll(link => !retainedTagIds.Contains(link.TagId));
+        foreach (var tag in replacement.RecipeTags)
+        {
+            AddTag(tag.Tag);
+        }
+    }
+
     public void AddIngredient(
         Ingredient ingredient,
         decimal? quantity = null,

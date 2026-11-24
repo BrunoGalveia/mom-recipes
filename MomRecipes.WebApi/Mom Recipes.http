@@ -1,4 +1,5 @@
 @HostAddress = http://localhost:5115
+@RecipeId = 00000000-0000-0000-0000-000000000000
 
 GET {{HostAddress}}/weatherforecast/
 Accept: application/json
@@ -11,9 +12,11 @@ Content-Type: application/json
 {
   "title": "Tomato Salad",
   "servings": 2,
+  "totalTimeInMinutes": 15,
+  "tagNames": ["vegan", "quick"],
   "ingredients": [
     { "name": "Tomato", "quantity": 2 },
-    { "name": "Salt" }
+    { "name": "Salt", "notes": "To taste" }
   ],
   "steps": [
     "Slice the tomatoes.",
@@ -23,5 +26,45 @@ Content-Type: application/json
 
 ###
 
-GET {{HostAddress}}/api/recipes
+GET {{HostAddress}}/api/recipes?page=1&pageSize=20
 Accept: application/json
+
+###
+
+GET {{HostAddress}}/api/recipes?name=salad&ingredientNames=tomato&ingredientNames=salt&tagNames=vegan&maxTimeInMinutes=20
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/api/ingredients?page=1&pageSize=20
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/api/tags?page=1&pageSize=20
+Accept: application/json
+
+###
+
+# Set RecipeId to the ID returned by POST. PUT replaces the entire recipe.
+PUT {{HostAddress}}/api/recipes/{{RecipeId}}
+Content-Type: application/json
+
+{
+  "title": "Tomato and Basil Salad",
+  "servings": 4,
+  "totalTimeInMinutes": 20,
+  "tagNames": ["vegan"],
+  "ingredients": [
+    { "name": "Tomato", "quantity": 4 },
+    { "name": "Basil", "notes": "To taste" }
+  ],
+  "steps": [
+    "Slice the tomatoes.",
+    "Toss with the basil."
+  ]
+}
+
+###
+
+DELETE {{HostAddress}}/api/recipes/{{RecipeId}}

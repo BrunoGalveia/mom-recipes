@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MomRecipes.Application.Catalog;
 using MomRecipes.Application.Recipes;
+using MomRecipes.Infrastructure.Catalog;
 using MomRecipes.Infrastructure.Persistence;
 using MomRecipes.Infrastructure.Recipes;
 
@@ -23,6 +25,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IRecipeRepository, RecipeRepository>();
+        services.AddScoped<ICatalogRepository, CatalogRepository>();
         return services;
     }
 }

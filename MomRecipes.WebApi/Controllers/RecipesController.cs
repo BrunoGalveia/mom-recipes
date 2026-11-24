@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MomRecipes.Application.Pagination;
 using MomRecipes.Application.Recipes;
 
 namespace MomRecipes.WebApi.Controllers;
@@ -9,7 +10,7 @@ public sealed class RecipesController(RecipeService recipeService) : ControllerB
 {
     [HttpPost]
     public async Task<ActionResult<RecipeDto>> Create(
-        CreateRecipeRequest request, CancellationToken cancellationToken)
+        SaveRecipeRequest request, CancellationToken cancellationToken)
     {
         RecipeDto recipe;
 
@@ -19,15 +20,31 @@ public sealed class RecipesController(RecipeService recipeService) : ControllerB
         }
         catch (ArgumentException exception)
         {
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid recipe",
-                Detail = exception.Message
-            });
+            return InvalidRecipe(exception);
         }
 
         return CreatedAtAction(nameof(GetById), new { id = recipe.Id }, recipe);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<RecipeDto>> Update(
+        Guid id, SaveRecipeRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var recipe = await recipeService.UpdateAsync(id, request, cancellationToken);
+            return recipe is null ? NotFound() : Ok(recipe);
+        }
+        catch (ArgumentException exception)
+        {
+            return InvalidRecipe(exception);
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        return await recipeService.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
     }
 
     [HttpGet("{id:guid}")]
@@ -38,9 +55,23 @@ public sealed class RecipesController(RecipeService recipeService) : ControllerB
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<RecipeDto>>> List(CancellationToken cancellationToken)
+    public async Task<ActionResult<PagedResult<RecipeDto>>> List(
+        [FromQuery] RecipeSearchRequest request, CancellationToken cancellationToken)
     {
-        var recipes = await recipeService.ListAsync(cancellationToken);
-        return Ok(recipes);
+        try
+        {
+            return Ok(await recipeService.SearchAsync(request, cancellationToken));
+        }
+        catch (ArgumentException exception)
+        {
+            return Problem(statusCode: StatusCodes.Status400BadRequest,
+                title: "Invalid recipe filters", detail: exception.Message);
+        }
+    }
+
+    private ObjectResult InvalidRecipe(ArgumentException exception)
+    {
+        return Problem(statusCode: StatusCodes.Status400BadRequest,
+            title: "Invalid recipe", detail: exception.Message);
     }
 }

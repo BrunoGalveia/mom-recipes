@@ -8,12 +8,10 @@ public sealed class RecipeStep
 
     internal RecipeStep(Recipe recipe, int position, string instruction)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(instruction);
-
         Recipe = recipe;
         RecipeId = recipe.Id;
         Position = position;
-        Instruction = instruction.Trim();
+        UpdateInstruction(instruction);
     }
 
     public int Id { get; private set; }
@@ -21,4 +19,10 @@ public sealed class RecipeStep
     public Recipe Recipe { get; private set; } = null!;
     public int Position { get; private set; }
     public string Instruction { get; private set; } = null!;
+
+    internal void UpdateInstruction(string instruction)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(instruction);
+        Instruction = instruction.Trim();
+    }
 }
