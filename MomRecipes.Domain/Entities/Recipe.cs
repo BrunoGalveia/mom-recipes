@@ -6,12 +6,19 @@ public sealed class Recipe
     private readonly List<RecipeStep> _steps = [];
     private readonly List<RecipeTag> _recipeTags = [];
 
+    private Recipe()
+    {
+        Ingredients = _ingredients.AsReadOnly();
+        Steps = _steps.AsReadOnly();
+        RecipeTags = _recipeTags.AsReadOnly();
+    }
+
     public Recipe(
         string title,
         string? description = null,
         int? servings = null,
         string? imageUrl = null,
-        int? totalTimeInMinutes = null)
+        int? totalTimeInMinutes = null) : this()
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(title);
 
@@ -32,17 +39,14 @@ public sealed class Recipe
         ImageUrl = string.IsNullOrWhiteSpace(imageUrl) ? null : imageUrl.Trim();
         Servings = servings;
         TotalTimeInMinutes = totalTimeInMinutes;
-        Ingredients = _ingredients.AsReadOnly();
-        Steps = _steps.AsReadOnly();
-        RecipeTags = _recipeTags.AsReadOnly();
     }
 
-    public Guid Id { get; }
-    public string Title { get; }
-    public string? Description { get; }
-    public string? ImageUrl { get; }
-    public int? Servings { get; }
-    public int? TotalTimeInMinutes { get; }
+    public Guid Id { get; private set; }
+    public string Title { get; private set; } = null!;
+    public string? Description { get; private set; }
+    public string? ImageUrl { get; private set; }
+    public int? Servings { get; private set; }
+    public int? TotalTimeInMinutes { get; private set; }
     public IReadOnlyList<RecipeIngredient> Ingredients { get; }
     public IReadOnlyList<RecipeStep> Steps { get; }
     public IReadOnlyList<RecipeTag> RecipeTags { get; }

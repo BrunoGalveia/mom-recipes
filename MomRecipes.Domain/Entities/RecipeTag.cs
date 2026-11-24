@@ -2,6 +2,10 @@ namespace MomRecipes.Domain.Entities;
 
 public sealed class RecipeTag
 {
+    private RecipeTag()
+    {
+    }
+
     internal RecipeTag(Recipe recipe, Tag tag)
     {
         Recipe = recipe;
@@ -11,7 +15,7 @@ public sealed class RecipeTag
     }
 
     public Guid RecipeId { get; private set; }
-    public Recipe Recipe { get; private set; }
+    public Recipe Recipe { get; private set; } = null!;
     public int TagId { get; private set; }
-    public Tag Tag { get; private set; }
+    public Tag Tag { get; private set; } = null!;
 }

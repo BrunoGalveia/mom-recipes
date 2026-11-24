@@ -2,6 +2,10 @@ namespace MomRecipes.Domain.Entities;
 
 public sealed class RecipeStep
 {
+    private RecipeStep()
+    {
+    }
+
     internal RecipeStep(Recipe recipe, int position, string instruction)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(instruction);
@@ -14,7 +18,7 @@ public sealed class RecipeStep
 
     public int Id { get; private set; }
     public Guid RecipeId { get; private set; }
-    public Recipe Recipe { get; private set; }
-    public int Position { get; }
-    public string Instruction { get; }
+    public Recipe Recipe { get; private set; } = null!;
+    public int Position { get; private set; }
+    public string Instruction { get; private set; } = null!;
 }

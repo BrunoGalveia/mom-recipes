@@ -2,6 +2,10 @@ namespace MomRecipes.Domain.Entities;
 
 public sealed class RecipeIngredient
 {
+    private RecipeIngredient()
+    {
+    }
+
     internal RecipeIngredient(Recipe recipe, Ingredient ingredient, decimal? quantity, string? unit, string? notes)
     {
         ArgumentNullException.ThrowIfNull(ingredient);
@@ -22,10 +26,10 @@ public sealed class RecipeIngredient
 
     public int Id { get; private set; }
     public Guid RecipeId { get; private set; }
-    public Recipe Recipe { get; private set; }
+    public Recipe Recipe { get; private set; } = null!;
     public int IngredientId { get; private set; }
-    public Ingredient Ingredient { get; private set; }
-    public decimal? Quantity { get; }
-    public string? Unit { get; }
-    public string? Notes { get; }
+    public Ingredient Ingredient { get; private set; } = null!;
+    public decimal? Quantity { get; private set; }
+    public string? Unit { get; private set; }
+    public string? Notes { get; private set; }
 }
